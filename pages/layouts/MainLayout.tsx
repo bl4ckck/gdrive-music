@@ -1,7 +1,7 @@
 import type { NextPage } from "next"
 import Head from 'next/head'
 import Image from 'next/image'
-import Player from "../components/player"
+import Player from "../../components/player"
 
 const MainLayout: NextPage<PropsMainLayout> = (props) => {
     return (
@@ -14,12 +14,10 @@ const MainLayout: NextPage<PropsMainLayout> = (props) => {
                 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <header>
-                <nav>
-                    <a href="">asd</a>
-                </nav>
-            </header>
-            <main>
+            <div className="fixed top-0 z-50 flex items-center w-full px-4 bg-white shadow-md h-14">
+                <div>asd</div>
+            </div>
+            <main className="mt-20">
                 <Player />
                 {props.children}
             </main>
