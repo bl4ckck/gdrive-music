@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+ font-size: 100%;
+ box-sizing: content-box;
+}
+
+*, *::before, *::after{
+ box-sizing: inherit;
+}
+
+body {
+ margin: 0;
+ padding: 0;
+ line-height: 1.3;
+ font-family: 'Readex Pro', sans-serif;
+}
+main {
+ min-height: 100vh;
+}
