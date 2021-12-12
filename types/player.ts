@@ -3,6 +3,7 @@ import { Howl, HowlOptions } from 'howler';
 type usePlayerAction = {
     play: ()=> number | Howl | undefined
     stop: () => Howl | undefined
+    setSeek: (seek: number) => void
 }
 
 type usePlayerState<T = boolean> = {
@@ -10,8 +11,9 @@ type usePlayerState<T = boolean> = {
     isPause: T
     isStop: T
     isEnd: T
-    flagSeek: boolean
+    flagSeek: T
     seek: number
+    duration: number
 }
 
 export type usePlayerType = () => {

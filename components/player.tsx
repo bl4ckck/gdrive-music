@@ -1,3 +1,8 @@
+/** 
+ * Test case:
+ * 1. If song is end, the seek state also reset & the UI not bouncing
+ * 2. Immediately start song with space 
+*/
 import React, { ReactElement } from "react"
 import { Howl, Howler } from 'howler';
 import { BiPlayCircle, BiPauseCircle, BiVolumeFull, 
@@ -23,7 +28,7 @@ const Player = (props: PropsPlayer) => {
         return () => {
             window.removeEventListener('keydown', handleSpace)
         };
-    }, [audioAPI])
+    }, [audioAPI!==undefined])
 
     const ShowSeek = (): JSX.Element => {
         return (
@@ -33,10 +38,13 @@ const Player = (props: PropsPlayer) => {
 
     return (
         <div className="fixed bottom-0 z-50 flex items-center w-full h-24 space-x-5 bg-white md:h-16">
-            <input type="range" defaultValue={0} className="absolute top-0 w-full -mt-2" />
+            <input type="range" onChange={(e)=>{
+                e.preventDefault()
+                mcAction.setSeek(parseFloat(e.target.value))
+            }} step="1" value={mcState.seek} min="0" max={mcState.duration} className="absolute top-0 w-full -mt-2" />
             <div className="flex-grow">album_cover</div>
 
-            <div className="cursor-pointer">volume</div>
+            <div className="cursor-pointer">volume {mcState.duration}</div>
             <div className="cursor-pointer">prev</div>
             <div className="cursor-pointer" onClick={(e) => {
                 e.preventDefault()
@@ -48,7 +56,7 @@ const Player = (props: PropsPlayer) => {
             }}>stop</div>
             <div className="cursor-pointer">next</div>
 
-            <div className="flex-grow cursor-pointer">title {mcState.seek}</div>
+            <div className="flex-grow cursor-pointer">title</div>
 
             <div className="cursor-pointer">loop</div>
             <div className="cursor-pointer">eq</div>
