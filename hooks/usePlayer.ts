@@ -2,6 +2,7 @@ import React from "react"
 import { Howl, Howler, HowlOptions } from 'howler';
 import { usePlayerType } from "../types/player";
 
+//TODO: Fix bug useEffect of seek still running onStop or onEnd
 const usePlayer: usePlayerType = () => {
     const [flagSeek, setFlagSeek] = React.useState<boolean>(false)
     const [seek, setSeek] = React.useState<number>(0) // init state from localstore
@@ -18,7 +19,6 @@ const usePlayer: usePlayerType = () => {
 
     React.useEffect(() => {
         console.log("load Howler")
-        let intervalSeek: NodeJS.Timer
 
         const sound = new Howl({
             src: ['/songs/prism.mp3', '/songs/dubstep.mp3'],
@@ -29,16 +29,9 @@ const usePlayer: usePlayerType = () => {
             },
             onseek: (i) => {
                 console.log("lagi diseek")
+                // console.log("when playing, flag seek: ", flagSeek)
                 // clearInterval(intervalSeek)
-            },
-            onplay: (i) => {
-                setIdPlay(i)
-                console.log(flagSeek)
-                intervalSeek = setInterval(() => {
-                    if(flagSeek)
-                        return
-                    setSeek(sound.seek())
-                }, 1000)
+                setFlagSeek(false)
             },
             onend: (i) => {
                 //Reset state
@@ -48,10 +41,21 @@ const usePlayer: usePlayerType = () => {
                 setStop(false)
             }
         })
-        setSound(sound)
-    
-        return () => clearInterval(intervalSeek)
+        setSound(sound)        
     }, [])
+
+    React.useEffect(() => {
+        console.log("flagSeek: ", flagSeek)
+
+        let intervalSeek: NodeJS.Timer
+        if (sound?.playing && flagSeek===false) {
+            intervalSeek = setInterval(() => {
+                console.log("interval's running")
+                setSeek(sound.seek())
+            }, 1000)
+        }
+        return () => clearInterval(intervalSeek)
+    }, [flagSeek, sound!==undefined])
 
     // React.useEffect(() => {
     //     console.log("interval")
@@ -84,10 +88,11 @@ const usePlayer: usePlayerType = () => {
         setPause(false)
         return sound?.stop()
     }
-    const _setSeekAudio = (value: number) => {
-        setFlagSeek(true)
+    const _setSeekAudio = (value: number, noPlaySeek?: boolean) => {
         setSeek(value)
-        return sound?.seek(value)
+        setFlagSeek(true)
+        if (noPlaySeek) return //true
+        return sound?.seek(value) //undefined
     }
 
     return {
@@ -96,6 +101,7 @@ const usePlayer: usePlayerType = () => {
             action: {
                 play: _playAudio,
                 stop: _stopAudio,
+                setFlagSeek,
                 setSeek: _setSeekAudio
             },
             state: {
