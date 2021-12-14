@@ -45,7 +45,6 @@ const Player = (props: PropsPlayer) => {
     //     return () => { };
     // }, [wPlayer !== seekRef.current?.offsetWidth])
 
-
     const ShowSeek = (): JSX.Element => {
         return (
             <div className="flex-grow cursor-pointer">title {mcState.seek}</div>
@@ -61,10 +60,16 @@ const Player = (props: PropsPlayer) => {
             <div className="absolute w-full -top-2">
                 <input ref={seekRef} id="seek-component" type="range" 
                 onMouseUp={(e) => seekEvent(e)}
-                onKeyUp={(e) => seekEvent(e) }
+                onKeyUp={(e) => {
+                    if (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === "ArrowDown")
+                        seekEvent(e)
+                }}
                 onTouchEnd={(e) => seekEvent(e) }
                 onMouseDown={(e) => seekEvent(e, true) }
-                onKeyDown={(e) => seekEvent(e, true) }
+                onKeyDown={(e) => {
+                    if (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === "ArrowDown")
+                        seekEvent(e, true)
+                }}
                 onTouchStart={(e) => seekEvent(e, true) }
                 onChange={(e) => {
                     // e.preventDefault()
