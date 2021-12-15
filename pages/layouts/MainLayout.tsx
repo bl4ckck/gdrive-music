@@ -1,7 +1,7 @@
 import type { NextPage } from "next"
 import Head from 'next/head'
 import Image from 'next/image'
-import Player from "../../components/player"
+import Player from "../../components/player/player"
 
 const MainLayout: NextPage<PropsMainLayout> = (props) => {
     return (
