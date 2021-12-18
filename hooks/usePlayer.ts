@@ -20,7 +20,7 @@ const usePlayer: usePlayerType = () => {
         console.log("load Howler")
 
         const sound = new Howl({
-            src: ['/songs/prism.mp3', '/songs/dubstep.mp3'],
+            src: ['/songs/kon.mp3', '/songs/prism.mp3'],
             html5: true,
             onload: (i) => {
                 console.log("onload " + i)
@@ -132,7 +132,9 @@ const usePlayer: usePlayerType = () => {
                 flagSeek,
                 seek,
                 duration,
-                isEnd
+                isEnd,
+                text: "", //Reducer
+                audioAPI: null //Reducer
             }
         }
     }

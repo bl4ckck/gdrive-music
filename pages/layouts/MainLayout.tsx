@@ -1,7 +1,16 @@
+import React from 'react';
 import type { NextPage } from "next"
 import Head from 'next/head'
 import Image from 'next/image'
 import Player from "../../components/player/player"
+import { PropsMainLayout } from "../../types/types"
+
+import { useSelector, useDispatch } from "react-redux";
+import { initHowl } from '../../actions';
+import HowlerInitialize from '../../lib/HowlerInitialize';
+import { ActionPlayerType } from '../../types/player';
+// import { Dispatch } from 'redux';
+import { Howl } from 'howler';
 
 const MainLayout: NextPage<PropsMainLayout> = (props) => {
     return (
