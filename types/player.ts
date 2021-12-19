@@ -1,5 +1,5 @@
 import { Howl, HowlOptions } from 'howler';
-import { TActions } from './types';
+import { KActions, TActions } from './types';
 /**
  * Store
  */
@@ -15,20 +15,23 @@ export const initialStatePlayer: usePlayerState = {
     text: "ini initial"
 }
 /**
- * Reducer
+ * Action
  */
 export enum PLAYER_ACTION_TYPE {
-    INIT="INIT",
-    PLAY="PLAY",
-    STOP="STOP",
-    SEEK="SEEK",
-    SEEK_PREVIEW="SEEK_PREVIEW"
+    INIT="[players] Initialize Howl Obj",
+    PLAY="[players] Play",
+    PAUSE="[players] Pause",
+    STOP="[players] Stop",
+    SEEK="[players] Seek",
+    SEEK_PREVIEW="[players] Seek Preview"
 }
+// type playerActionName = keyof typeof PLAYER_ACTION_TYPE
 export type ActionPlayerType = | TActions<PLAYER_ACTION_TYPE.INIT, Howl | null>
- | TActions<PLAYER_ACTION_TYPE.PLAY, Howl> 
-| TActions<PLAYER_ACTION_TYPE.STOP, Howl> 
-| TActions<PLAYER_ACTION_TYPE.SEEK, number | null> 
-| TActions<PLAYER_ACTION_TYPE.SEEK_PREVIEW, number | null>
+    | TActions<PLAYER_ACTION_TYPE.PLAY, Howl> 
+    | TActions<PLAYER_ACTION_TYPE.PAUSE, Howl> 
+    | TActions<PLAYER_ACTION_TYPE.STOP, Howl> 
+    | TActions<PLAYER_ACTION_TYPE.SEEK, number | null> 
+    | TActions<PLAYER_ACTION_TYPE.SEEK_PREVIEW, number | null>
 /**
  * usePlayer Hooks
  */

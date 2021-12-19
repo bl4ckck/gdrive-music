@@ -23,7 +23,7 @@ import { PropsPlayer } from "../../types/types";
 import { useSelector, useDispatch } from "react-redux";
 import { ActionPlayerType, usePlayerState } from "../../types/player";
 import { Dispatch } from "redux";
-import { initHowl, playAudio } from "../../actions";
+import { initHowl, playAudio } from "../../redux/actions";
 import HowlerInitialize from "../../lib/HowlerInitialize";
 
 const Player: React.FunctionComponent<PropsPlayer> = (props) => {

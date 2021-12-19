@@ -1,8 +1,13 @@
 import { Howl } from "howler"
-type TActions<T extends string
-,P = any> = {
+// Key for Action Types
+enum KActions { 
+    PLAYER="PLAYER", 
+    COBA="COBA"
+}
+// Reducer Structure
+type TActions<T extends string, P = any | null> = {
     type: T,
-    payload?: P
+    payload: P
 }
 type PropsMainLayout = {
     title: string,

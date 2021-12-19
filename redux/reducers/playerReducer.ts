@@ -1,11 +1,14 @@
 import { Howl } from "howler"
 import { Reducer } from "redux"
-import HowlerInitialize from "../lib/HowlerInitialize"
-import { ActionPlayerType, usePlayerState, initialStatePlayer } from "../types/player"
+import HowlerInitialize from "../../lib/HowlerInitialize"
+import { ACTION_TYPES } from "../../types/actions"
+import { ActionPlayerType, usePlayerState, initialStatePlayer, PLAYER_ACTION_TYPE } from "../../types/player"
+import { KActions } from "../../types/types"
 
-const playerReducer: Reducer<usePlayerState, ActionPlayerType> = (
+const playerReducer: Reducer<usePlayerState, Extract<ACTION_TYPES, 
+    { key: KActions.PLAYER }>["type"]> = (
     state = initialStatePlayer,
-    action: ActionPlayerType) => {
+    action) => {
     const playAudio = (): usePlayerState => {
         if (state.audioAPI) {
             if (!state.audioAPI.playing()) { // While not playing any audio
@@ -35,13 +38,13 @@ const playerReducer: Reducer<usePlayerState, ActionPlayerType> = (
     }
 
     switch (action.type) {
-        case "INIT":
+        case PLAYER_ACTION_TYPE.INIT:
             return {
                 ...state,
                 text: "ini init load",
-                audioAPI: action.payload ? action.payload : null
+                audioAPI: action.payload
             }
-        case "PLAY":
+        case PLAYER_ACTION_TYPE.PLAY:
             return playAudio()
         default:
             return state

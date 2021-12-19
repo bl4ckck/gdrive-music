@@ -6,7 +6,7 @@ import Player from "../../components/player/player"
 import { PropsMainLayout } from "../../types/types"
 
 import { useSelector, useDispatch } from "react-redux";
-import { initHowl } from '../../actions';
+import { initHowl } from '../../redux/actions';
 import HowlerInitialize from '../../lib/HowlerInitialize';
 import { ActionPlayerType } from '../../types/player';
 // import { Dispatch } from 'redux';
