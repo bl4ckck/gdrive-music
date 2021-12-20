@@ -1,5 +1,11 @@
 import { Howl, HowlOptions } from 'howler';
-import { KActions, TActions } from './types';
+import { KActions, Subset, TActions } from './types';
+/**
+ * Reducer
+ */
+export type playAudioState = Pick<usePlayerState, "isPlay" | "isPause" | "isStop" | "text">
+export type pauseAudioState = Pick<usePlayerState, "isPlay" | "isPause" | "flagSeek" | "text">
+
 /**
  * Store
  */
@@ -20,6 +26,7 @@ export const initialStatePlayer: usePlayerState = {
 export enum PLAYER_ACTION_TYPE {
     INIT="[players] Initialize Howl Obj",
     PLAY="[players] Play",
+    PLAY_STATE="[players] Play Update State",
     PAUSE="[players] Pause",
     STOP="[players] Stop",
     SEEK="[players] Seek",
@@ -27,8 +34,9 @@ export enum PLAYER_ACTION_TYPE {
 }
 // type playerActionName = keyof typeof PLAYER_ACTION_TYPE
 export type ActionPlayerType = | TActions<PLAYER_ACTION_TYPE.INIT, Howl | null>
-    | TActions<PLAYER_ACTION_TYPE.PLAY, Howl> 
-    | TActions<PLAYER_ACTION_TYPE.PAUSE, Howl> 
+    | TActions<PLAYER_ACTION_TYPE.PLAY> 
+    | TActions<PLAYER_ACTION_TYPE.PLAY_STATE, playAudioState | pauseAudioState>
+    | TActions<PLAYER_ACTION_TYPE.PAUSE> 
     | TActions<PLAYER_ACTION_TYPE.STOP, Howl> 
     | TActions<PLAYER_ACTION_TYPE.SEEK, number | null> 
     | TActions<PLAYER_ACTION_TYPE.SEEK_PREVIEW, number | null>

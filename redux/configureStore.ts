@@ -8,10 +8,11 @@ import loggerMiddleware from './middleware/logger'
 import rootReducer from './reducers'
 import { ActionPlayerType, initialStatePlayer, usePlayerState } from '../types/player'
 import { ACTION_TYPES } from '../types/actions'
+import { playerMdl } from './middleware/playerMdl'
 
 const configureStore = (): Store<usePlayerState, ACTION_TYPES["type"]> => {
     const middlewares = [loggerMiddleware, thunkMiddleware]
-    const middlewareEnhancer = applyMiddleware(...middlewares)
+    const middlewareEnhancer = applyMiddleware(...middlewares, ...playerMdl)
 
     const enhancers = [middlewareEnhancer, monitorReducersEnhancer]
     const composedEnhancers = compose<StoreEnhancerStoreCreator<{}, {}>>(...enhancers)

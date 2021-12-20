@@ -3,7 +3,6 @@
  * 1. If song is end, the seek state also reset & the UI not bouncing
  * 2. Immediately start song with space 
 */
-// TODO: Add devtools
 // TODO: Redux seek
 // TODO: Redux message pattern
 // TODO: Set Loading in Media Control If soundAPI still undefined
@@ -23,7 +22,7 @@ import { PropsPlayer } from "../../types/types";
 import { useSelector, useDispatch } from "react-redux";
 import { ActionPlayerType, usePlayerState } from "../../types/player";
 import { Dispatch } from "redux";
-import { initHowl, playAudio } from "../../redux/actions";
+import { initHowl, pauseAudio, playAudio } from "../../redux/actions";
 import HowlerInitialize from "../../lib/HowlerInitialize";
 
 const Player: React.FunctionComponent<PropsPlayer> = (props) => {
@@ -33,7 +32,8 @@ const Player: React.FunctionComponent<PropsPlayer> = (props) => {
     const [isHover, setHover] = React.useState<boolean>(false)
 
     const seekRef = React.useRef(null);
-    const dispatch = useDispatch<Dispatch<any>>()
+    const dispatch = useDispatch<Dispatch<ActionPlayerType>>()
+    const isPlaying = useSelector<usePlayerState, usePlayerState["isPlay"]>((state) => state.isPlay)
 
     React.useEffect(() => {
         const audioAPI = new Howl({
@@ -48,7 +48,7 @@ const Player: React.FunctionComponent<PropsPlayer> = (props) => {
         const handleSpace = (event: KeyboardEvent) => {
             if (event.key === " ") {
                 event.preventDefault()
-                dispatch(playAudio())
+                dispatch(isPlaying ? pauseAudio() : playAudio())
             }
         };
         window.addEventListener('keydown', handleSpace);
@@ -56,7 +56,7 @@ const Player: React.FunctionComponent<PropsPlayer> = (props) => {
         return () => {
             window.removeEventListener('keydown', handleSpace)
         };
-    }, [useSelector<usePlayerState, usePlayerState["audioAPI"]>((state) => state.audioAPI) !== null])
+    }, [useSelector<usePlayerState>((state) => state.audioAPI) !== null, isPlaying])
 
     return (
         <div className="fixed bottom-0 z-50 flex items-center w-full h-24 space-x-5 bg-white md:h-16">
@@ -65,7 +65,7 @@ const Player: React.FunctionComponent<PropsPlayer> = (props) => {
             <div className="flex-grow cursor-pointer" onClick={(e) => {
                 e.preventDefault()
                 console.log("reducer")
-                dispatch(playAudio())
+                dispatch(isPlaying? pauseAudio() : playAudio())
             }}>PLAY, howl: {`${useSelector<usePlayerState, usePlayerState["text"]>((state) => state.text)}`}</div>
 
             {/* <div className="cursor-pointer">volume {mcState.duration}</div>
