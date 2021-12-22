@@ -22,6 +22,11 @@ const playAudioMdl: ThunkMiddleware<usePlayerState, ActionPlayerType> =
             api.dispatch(playAudioUpdateState({isPlay: false, isPause: false,
                  flagSeek: false, text: "PAUSE MDL" }))
         }
+        else if (action.type === PLAYER_ACTION_TYPE.STOP) {
+            api.getState().audioAPI?.stop()
+            api.dispatch(playAudioUpdateState({isPlay: false, isStop: true, isPause: false,
+                 flagSeek: false, text: "STOP MDL" }))
+        }
 }
 // const playerMdl: Middleware<{}, usePlayerState, Dispatch<Action<ActionPlayerType>>> = 
 //     api => next => (action: ActionPlayerType) => {

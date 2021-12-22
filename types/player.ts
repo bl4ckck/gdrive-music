@@ -5,6 +5,7 @@ import { KActions, Subset, TActions } from './types';
  */
 export type playAudioState = Pick<usePlayerState, "isPlay" | "isPause" | "isStop" | "text">
 export type pauseAudioState = Pick<usePlayerState, "isPlay" | "isPause" | "flagSeek" | "text">
+export type stopAudioState = Pick<usePlayerState, "isPlay" | "isPause" | "flagSeek" | "isStop" |"text">
 
 /**
  * Store
@@ -37,17 +38,19 @@ export type ActionPlayerType = | TActions<PLAYER_ACTION_TYPE.INIT, Howl | null>
     | TActions<PLAYER_ACTION_TYPE.PLAY> 
     | TActions<PLAYER_ACTION_TYPE.PLAY_STATE, playAudioState | pauseAudioState>
     | TActions<PLAYER_ACTION_TYPE.PAUSE> 
-    | TActions<PLAYER_ACTION_TYPE.STOP, Howl> 
+    | TActions<PLAYER_ACTION_TYPE.STOP> 
     | TActions<PLAYER_ACTION_TYPE.SEEK, number | null> 
     | TActions<PLAYER_ACTION_TYPE.SEEK_PREVIEW, number | null>
 /**
  * usePlayer Hooks
  */
 export type usePlayerAction = {
-    play: ()=> number | Howl | undefined,
-    stop: () => Howl | undefined,
-    setFlagSeek: (flag: boolean) => void,
-    setSeek: (seek: number, noPlaySeek?: boolean) => void
+    play: () => ActionPlayerType,
+    stop: () => ActionPlayerType,
+    // play: ()=> number | Howl | undefined,
+    // stop: () => Howl | undefined,
+    // setFlagSeek: (flag: boolean) => void,
+    // setSeek: (seek: number, noPlaySeek?: boolean) => void
 }
 export type usePlayerState<T = boolean> = {
     audioAPI: Howl | null,
@@ -61,7 +64,7 @@ export type usePlayerState<T = boolean> = {
     duration: number
 }
 export type usePlayerType = () => {
-    audioAPI: Howl | undefined,
+    // audioAPI: Howl | null,
     mediaControl: {
         action: usePlayerAction,
         state: usePlayerState

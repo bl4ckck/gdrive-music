@@ -7,36 +7,7 @@ import { KActions } from "../../types/types"
 
 const playerReducer: Reducer<usePlayerState, Extract<ACTION_TYPES, 
     { key: KActions.PLAYER }>["type"]> = (
-    state = initialStatePlayer,
-    action) => {
-    const playAudio = (): usePlayerState => {
-        if (state.audioAPI) {
-            if (!state.audioAPI.playing()) { // While not playing any audio
-                state.audioAPI.play()
-                return {
-                    ...state,
-                    flagSeek: false,
-                    isPlay: true,
-                    isPause: false,
-                    isStop: false,
-                    text: "bisa"
-                }
-            }
-            else { // While playing audio
-                state.audioAPI.pause()
-                return {
-                    ...state,
-                    flagSeek: false,
-                    isPlay: false,
-                    isPause: true,
-                    isStop: false,
-                    text: "bisa play"
-                }
-            }
-        }
-        return state
-    }
-
+    state = initialStatePlayer, action) => {
     switch (action.type) {
         case PLAYER_ACTION_TYPE.INIT:
             return {
