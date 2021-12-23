@@ -6,10 +6,10 @@ import { KActions } from "../../types/types"
 import { playAudio, playAudioUpdateState } from "../actions"
 
 
-// const playerMdl: Middleware<{}, usePlayerState, Dispatch<Action<Extract<ACTION_TYPES,
-//     { key: KActions.PLAYER }>["type"]>>> = api => next => action => {
-const playAudioMdl: ThunkMiddleware<usePlayerState, ActionPlayerType> = 
+const playAudioMdl: Middleware<{}, usePlayerState, <ActionPlayerType>(action: ActionPlayerType) => ActionPlayerType> =
     api => next => (action: ActionPlayerType) => {
+// const playAudioMdl: ThunkMiddleware<usePlayerState, ActionPlayerType> = 
+//     api => next => (action: ActionPlayerType) => {
         next(action)
 
         if (action.type === PLAYER_ACTION_TYPE.PLAY) {
@@ -19,7 +19,7 @@ const playAudioMdl: ThunkMiddleware<usePlayerState, ActionPlayerType> =
         }
         else if (action.type === PLAYER_ACTION_TYPE.PAUSE) {
             api.getState().audioAPI?.pause()
-            api.dispatch(playAudioUpdateState({isPlay: false, isPause: false,
+            api.dispatch(playAudioUpdateState({isPlay: false, isPause: true,
                  flagSeek: false, text: "PAUSE MDL" }))
         }
         else if (action.type === PLAYER_ACTION_TYPE.STOP) {

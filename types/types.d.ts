@@ -15,10 +15,10 @@ type PropsMainLayout = {
     title: string,
     description: string
 }
-type PropsPlayer = {
-    title?: string,
-    url?: string
-}
+// type PropsPlayer = {
+//     actions: typeof PlayerActions,
+//     usePlayerState
+// }
 type PropsSeekPlayer = {
     mcState: usePlayerState<boolean>,
     mcAction: usePlayerAction

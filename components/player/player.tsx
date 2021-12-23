@@ -18,7 +18,7 @@ import {
     BiListUl, BiStopCircle, BiSkipPrevious, BiSkipNext
 } from "react-icons/bi";
 import usePlayer from "../../hooks/usePlayer";
-import { PropsPlayer } from "../../types/types";
+// import { PropsPlayer } from "../../types/types";
 
 import { useSelector, useDispatch } from "react-redux";
 import { ActionPlayerType, usePlayerState } from "../../types/player";
@@ -26,10 +26,15 @@ import { Dispatch } from "redux";
 import { initHowl, pauseAudio, playAudio } from "../../redux/actions";
 import HowlerInitialize from "../../lib/HowlerInitialize";
 
+import * as PlayerActions from "../../redux/actions"
+
+type PropsPlayer = {
+    actions: typeof PlayerActions
+} & usePlayerState
 const Player: React.FunctionComponent<PropsPlayer> = (props) => {
-    const { mediaControl } = usePlayer()
-    const mcAction = mediaControl.action
-    const mcState = mediaControl.state
+    // const { mediaControl } = usePlayer()
+    // const mcAction = mediaControl.action
+    // const mcState = mediaControl.state
     // const [wPlayer, setWPlayer] = React.useState<number>(0) // Element width
     // const [hoverValue, setHoverValue] = React.useState<number>(0)
     // const [isHover, setHover] = React.useState<boolean>(false)
@@ -38,21 +43,38 @@ const Player: React.FunctionComponent<PropsPlayer> = (props) => {
     // const dispatch = useDispatch<Dispatch<ActionPlayerType>>()
     // const isPlaying = useSelector<usePlayerState, usePlayerState["isPlay"]>((state) => state.isPlay)
 
+    const mcAction = props.actions
+
+    React.useEffect(() => {
+        console.log("load Howler")
+
+        const audioAPI = new Howl({
+            src: ['songs/dew.mp3', '/songs/dew.mp3', '/songs/prism.mp3'],
+            html5: true,
+        })
+        mcAction.initHowl(audioAPI)
+    }, [])
+
     React.useEffect(() => {
         console.log("event key wait for audio API")
         const handleSpace = (event: KeyboardEvent) => {
             if (event.key === " ") {
                 event.preventDefault()
-                mcAction.play()
+                _playAudio()
             }
-            return
         };
         window.addEventListener('keydown', handleSpace);
 
         return () => {
             window.removeEventListener('keydown', handleSpace)
         };
-    }, [mcState.audioAPI !== null, mcState.isPlay])
+    }, [props.audioAPI, props.isPlay])
+
+    const _playAudio = (): ActionPlayerType => {
+        if (props.isPlay === false) // While not playing any audio            
+            return mcAction.playAudio()
+        return mcAction.pauseAudio()
+    }
     
     return (
         <div className="fixed bottom-0 z-50 flex items-center w-full h-24 space-x-5 bg-white md:h-16">
@@ -60,19 +82,19 @@ const Player: React.FunctionComponent<PropsPlayer> = (props) => {
             
             <div className="flex-grow cursor-pointer">Artist Cover</div>
 
-            <div className="cursor-pointer">volume {mcState.duration}</div>
+            <div className="cursor-pointer">volume {props.duration}</div>
             <div className="cursor-pointer">prev</div>
             <div className="cursor-pointer" onClick={(e) => {
                 e.preventDefault()
-                mcAction.play()
-            }}>{mcState.isPlay ? <BiPauseCircle fontSize={40} /> : <BiPlayCircle fontSize={40} />}</div>
+                _playAudio()
+            }}>{props.isPlay ? <BiPauseCircle fontSize={40} /> : <BiPlayCircle fontSize={40} />}</div>
             <div className="cursor-pointer" onClick={(e) => {
                 e.preventDefault()
-                mcAction.stop()
+                mcAction.stopAudio()
             }}>stop</div>
             <div className="cursor-pointer">next</div>
 
-            <div className="flex-grow cursor-pointer">title {mcState.seek}</div>
+            <div className="flex-grow cursor-pointer">title {props.seek}</div>
 
             <div className="cursor-pointer">loop</div>
             <div className="cursor-pointer">eq</div>

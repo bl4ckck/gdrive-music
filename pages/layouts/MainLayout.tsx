@@ -11,6 +11,7 @@ import HowlerInitialize from '../../lib/HowlerInitialize';
 import { ActionPlayerType } from '../../types/player';
 // import { Dispatch } from 'redux';
 import { Howl } from 'howler';
+import PlayerWrapper from '../../containers/PlayerWrapper';
 
 const MainLayout: NextPage<PropsMainLayout> = (props) => {
     return (
@@ -27,7 +28,7 @@ const MainLayout: NextPage<PropsMainLayout> = (props) => {
                 <div>asd</div>
             </div>
             <main className="mt-20">
-                <Player />
+                <PlayerWrapper />
                 {props.children}
             </main>
             <footer>
