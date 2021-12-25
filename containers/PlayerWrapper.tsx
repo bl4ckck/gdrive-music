@@ -7,8 +7,12 @@ import { initHowl, pauseAudio, playAudio, stopAudio } from "../redux/actions";
 import {TActions} from "../types/types"
 import * as PlayerActions from "../redux/actions"
 import Player from "../components/player/player";
+import { PlayPauseButton } from "../components/player/controllerPlayer";
 
 type SPlayer = usePlayerState
+type PropsPlayerWrapper = {
+    actions: typeof PlayerActions
+} & usePlayerState
 type TActionConnect = { actions: typeof PlayerActions }
 
 const mapStateToProps = (state: SPlayer) => ({
@@ -27,19 +31,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action<ActionPlayerType>>) => ({
     actions: bindActionCreators(PlayerActions, dispatch)
 })
 
-// const awe = connect(
-//     mapStateToProps,
-//     mapDispatchToProps
-// )
-{/* <TStateProps = {}, TDispatchProps = {}, TOwnProps = {}, State = DefaultState>(
-        mapStateToProps: MapStateToPropsParam<TStateProps, TOwnProps, State>,
-        mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps>,
-    ): InferableComponentEnhancerWithProps<
-        TStateProps & ResolveThunks<TDispatchProps>,
-        TOwnProps
-    >; */}
+const withConnectPlayer = (PlayerComponent: any) => 
+    (props: PropsPlayerWrapper) => <PlayerComponent {...props} />
 
-export default connect<SPlayer, TActionConnect, {}, SPlayer>(
+export default (WrappedPlayer: any) => connect<SPlayer, TActionConnect, {}, SPlayer>(
     mapStateToProps,
-    mapDispatchToProps
-)(Player)
+    mapDispatchToProps,
+)(withConnectPlayer(WrappedPlayer))

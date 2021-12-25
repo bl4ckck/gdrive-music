@@ -2,6 +2,9 @@ import { ActionPlayerType, pauseAudioState, playAudioState, PLAYER_ACTION_TYPE, 
 
 export const initHowl = (audioAPI: usePlayerState["audioAPI"]): ActionPlayerType => 
     ({ type: PLAYER_ACTION_TYPE.INIT, payload: audioAPI});
+export const onLoadAudio = (duration: number): ActionPlayerType => 
+    ({ type: PLAYER_ACTION_TYPE.ON_LOAD_AUDIO, 
+        payload: {text: "Set Duration", duration}});
 /** 
  * Play Audio Actions
 */

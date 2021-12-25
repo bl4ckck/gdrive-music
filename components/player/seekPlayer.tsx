@@ -1,7 +1,14 @@
 import React from "react"
+import { ActionPlayerType, usePlayerState } from "../../types/player"
 import { PropsSeekPlayer } from "../../types/types"
 
-const SeekPlayer = (props: PropsSeekPlayer): JSX.Element => {
+type PropsPlayPauseButton = {
+    play: () => ActionPlayerType,
+    pause: () => ActionPlayerType, isPlay: usePlayerState["isPlay"],
+    // initHowl: (audioAPI: Howl | null) => ActionPlayerType,
+    audioAPI: usePlayerState["audioAPI"]
+}
+const SeekPlayer = (props: PropsPlayPauseButton): JSX.Element => {
     const { mcState, mcAction } = props
 
     const [wPlayer, setWPlayer] = React.useState<number>(0) // Element width

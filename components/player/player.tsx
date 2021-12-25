@@ -12,11 +12,11 @@
 // https://css-tricks.com/value-bubbles-for-range-inputs/
 import React, { ReactElement } from "react"
 import { Howl, Howler } from 'howler';
-import {
-    BiPlayCircle, BiPauseCircle, BiVolumeFull,
-    BiVolumeLow, BiVolumeMute, BiVolume,
-    BiListUl, BiStopCircle, BiSkipPrevious, BiSkipNext
-} from "react-icons/bi";
+// import {
+//     BiPlayCircle, BiPauseCircle, BiVolumeFull,
+//     BiVolumeLow, BiVolumeMute, BiVolume,
+//     BiListUl, BiStopCircle, BiSkipPrevious, BiSkipNext
+// } from "react-icons/bi";
 import usePlayer from "../../hooks/usePlayer";
 // import { PropsPlayer } from "../../types/types";
 
@@ -49,32 +49,41 @@ const Player: React.FunctionComponent<PropsPlayer> = (props) => {
         console.log("load Howler")
 
         const audioAPI = new Howl({
-            src: ['songs/dew.mp3', '/songs/dew.mp3', '/songs/prism.mp3'],
+            src: ['songs/prism.mp3', '/songs/dew.mp3', '/songs/prism.mp3'],
             html5: true,
+            onload: (i) => {
+                mcAction.onLoadAudio(audioAPI.duration())
+            },
+            onseek: (s) => {
+                console.log("dd")
+            }
         })
         mcAction.initHowl(audioAPI)
     }, [])
 
-    React.useEffect(() => {
-        console.log("event key wait for audio API")
-        const handleSpace = (event: KeyboardEvent) => {
-            if (event.key === " ") {
-                event.preventDefault()
-                _playAudio()
-            }
-        };
-        window.addEventListener('keydown', handleSpace);
+    // React.useEffect(() => {
+    //     console.log("event key wait for audio API")
+    //     const handleSpace = (event: KeyboardEvent) => {
+    //         if (event.key === " ") {
+    //             event.preventDefault()
+    //             _playAudio()
+    //         }
+    //     };
+    //     window.addEventListener('keydown', handleSpace);
 
-        return () => {
-            window.removeEventListener('keydown', handleSpace)
-        };
-    }, [props.audioAPI, props.isPlay])
+    //     return () => {
+    //         window.removeEventListener('keydown', handleSpace)
+    //     };
+    // }, [props.audioAPI!==null])
 
-    const _playAudio = (): ActionPlayerType => {
-        if (props.isPlay === false) // While not playing any audio            
-            return mcAction.playAudio()
-        return mcAction.pauseAudio()
-    }
+    // const _playAudio = (): ActionPlayerType => {
+    //     if (props.audioAPI?.playing() === false) // While not playing any audio            
+    //         return mcAction.playAudio()
+    //     return mcAction.pauseAudio()
+    // }
+
+    const _stopAudio = (): ActionPlayerType => 
+        mcAction.stopAudio()
     
     return (
         <div className="fixed bottom-0 z-50 flex items-center w-full h-24 space-x-5 bg-white md:h-16">
@@ -84,13 +93,14 @@ const Player: React.FunctionComponent<PropsPlayer> = (props) => {
 
             <div className="cursor-pointer">volume {props.duration}</div>
             <div className="cursor-pointer">prev</div>
-            <div className="cursor-pointer" onClick={(e) => {
+            {/* <div className="cursor-pointer" onClick={(e) => {
                 e.preventDefault()
                 _playAudio()
-            }}>{props.isPlay ? <BiPauseCircle fontSize={40} /> : <BiPlayCircle fontSize={40} />}</div>
+            }}>{props.isPlay ? <BiPauseCircle fontSize={40} /> : <BiPlayCircle fontSize={40} />}</div> */}
+            {props.children}
             <div className="cursor-pointer" onClick={(e) => {
                 e.preventDefault()
-                mcAction.stopAudio()
+                _stopAudio()
             }}>stop</div>
             <div className="cursor-pointer">next</div>
 

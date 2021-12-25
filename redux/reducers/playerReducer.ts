@@ -15,6 +15,11 @@ const playerReducer: Reducer<usePlayerState, Extract<ACTION_TYPES,
                 text: "ini init load",
                 audioAPI: action.payload
             }
+        case PLAYER_ACTION_TYPE.ON_LOAD_AUDIO:
+            return {
+                ...state,
+                ...action.payload
+            }
         case PLAYER_ACTION_TYPE.PLAY_STATE:
             return {...state, ...action.payload}
         default:

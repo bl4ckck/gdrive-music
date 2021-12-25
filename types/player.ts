@@ -3,6 +3,7 @@ import { KActions, Subset, TActions } from './types';
 /**
  * Reducer
  */
+export type onLoadAudioState = Pick<usePlayerState, "duration" | "text">
 export type playAudioState = Pick<usePlayerState, "isPlay" | "isPause" | "isStop" | "text">
 export type pauseAudioState = Pick<usePlayerState, "isPlay" | "isPause" | "flagSeek" | "text">
 export type stopAudioState = Pick<usePlayerState, "isPlay" | "isPause" | "flagSeek" | "isStop" |"text">
@@ -26,6 +27,7 @@ export const initialStatePlayer: usePlayerState = {
  */
 export enum PLAYER_ACTION_TYPE {
     INIT="[players] Initialize Howl Obj",
+    ON_LOAD_AUDIO="[players] On Load Audio",
     PLAY="[players] Play",
     PLAY_STATE="[players] Play Update State",
     PAUSE="[players] Pause",
@@ -35,7 +37,8 @@ export enum PLAYER_ACTION_TYPE {
 }
 // type playerActionName = keyof typeof PLAYER_ACTION_TYPE
 export type ActionPlayerType = | TActions<PLAYER_ACTION_TYPE.INIT, Howl | null>
-    | TActions<PLAYER_ACTION_TYPE.PLAY> 
+    | TActions<PLAYER_ACTION_TYPE.ON_LOAD_AUDIO, onLoadAudioState>
+    | TActions<PLAYER_ACTION_TYPE.PLAY>
     | TActions<PLAYER_ACTION_TYPE.PLAY_STATE, playAudioState | pauseAudioState>
     | TActions<PLAYER_ACTION_TYPE.PAUSE> 
     | TActions<PLAYER_ACTION_TYPE.STOP> 

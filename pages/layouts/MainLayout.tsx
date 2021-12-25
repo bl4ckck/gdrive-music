@@ -8,10 +8,29 @@ import { PropsMainLayout } from "../../types/types"
 import { useSelector, useDispatch } from "react-redux";
 import { initHowl } from '../../redux/actions';
 import HowlerInitialize from '../../lib/HowlerInitialize';
-import { ActionPlayerType } from '../../types/player';
+import { ActionPlayerType, usePlayerState } from '../../types/player';
 // import { Dispatch } from 'redux';
 import { Howl } from 'howler';
+import * as PlayerActions from "../../redux/actions"
 import PlayerWrapper from '../../containers/PlayerWrapper';
+import { PlayPauseButton } from '../../components/player/controllerPlayer';
+
+type PropsPlayerWrapper = {
+    actions: typeof PlayerActions
+} & usePlayerState
+
+const Compnya = (props: any) => <div>{`text ${props.isPlay} ${props.coba}`}</div>
+const Compnya1 = (props: PropsPlayerWrapper) => (
+    <Player {...props}>
+        <PlayPauseButton
+            play={props.actions.playAudio}
+            pause={props.actions.pauseAudio}
+            isPlay={props.isPlay}
+            audioAPI={props.audioAPI}
+        />
+    </Player>
+)
+const WrappedComponent = PlayerWrapper(Compnya1);
 
 const MainLayout: NextPage<PropsMainLayout> = (props) => {
     return (
@@ -28,7 +47,7 @@ const MainLayout: NextPage<PropsMainLayout> = (props) => {
                 <div>asd</div>
             </div>
             <main className="mt-20">
-                <PlayerWrapper />
+                <WrappedComponent />
                 {props.children}
             </main>
             <footer>
