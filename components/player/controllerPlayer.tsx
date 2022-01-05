@@ -1,36 +1,26 @@
 import { Howl } from 'howler'
 import React from 'react'
 import { BiPauseCircle, BiPlayCircle } from 'react-icons/bi'
+import usePlayer from '../../hooks/usePlayer'
 import { ActionPlayerType, usePlayerState } from '../../types/player'
 
-type PropsPlayPauseButton = { play: () => ActionPlayerType, 
-    pause: () => ActionPlayerType, isPlay: usePlayerState["isPlay"],
+// type PropsPlayPauseButton = { play: () => ActionPlayerType, 
+//     pause: () => ActionPlayerType, isPlay: usePlayerState["isPlay"],
+//     audioAPI: usePlayerState["audioAPI"]
+// }
+type PropsPlayPauseButton = { play: () => ActionPlayerType,
+    isPlay: usePlayerState["isPlay"],
     audioAPI: usePlayerState["audioAPI"]
 }
 export const PlayPauseButton = (props: PropsPlayPauseButton): JSX.Element => {
-    const _playAudio = (): ActionPlayerType => {
-        const { play, pause } = props
-        if (props.audioAPI?.playing() === false) // While not playing any audio
-            return play()
-        return pause()
-    }
-
-    // React.useEffect(() => {
-    //     console.log("load Howler")
-
-    //     const audioAPI = new Howl({
-    //         src: ['songs/dew.mp3', '/songs/dew.mp3', '/songs/prism.mp3'],
-    //         html5: true,
-    //     })
-    //     props.initHowl(audioAPI)
-    // }, [])
+    const { audioAPI, isPlay, play } = props
 
     React.useEffect(() => {
         console.log("event key wait for audio API")
         const handleSpace = (event: KeyboardEvent) => {
             if (event.key === " ") {
                 event.preventDefault()
-                _playAudio()
+                play()
             }
         };
         window.addEventListener('keydown', handleSpace);
@@ -38,15 +28,30 @@ export const PlayPauseButton = (props: PropsPlayPauseButton): JSX.Element => {
         return () => {
             window.removeEventListener('keydown', handleSpace)
         };
-    }, [props.audioAPI!==null])
+    }, [audioAPI !== null, isPlay])
+
+    const RenderPlayButton = React.useMemo(() => isPlay ? <BiPauseCircle fontSize={40} />
+            : <BiPlayCircle fontSize={40} />, [isPlay])
 
     return (
         <div className="cursor-pointer" onClick={(e) => {
             e.preventDefault()
-            _playAudio()
+            play()
         }}>
-            {props.isPlay ? <BiPauseCircle fontSize={40} /> 
-                : <BiPlayCircle fontSize={40} />}
+            {RenderPlayButton}
+        </div>
+    )
+}
+export const StopButton = (): JSX.Element => {
+    const { mediaControl } = usePlayer()
+    const mcAction = mediaControl.action
+
+    return (
+        <div className="cursor-pointer" onClick={(e) => {
+            e.preventDefault()
+            mcAction.stop()
+        }}>
+            stop
         </div>
     )
 }

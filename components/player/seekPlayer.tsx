@@ -1,15 +1,15 @@
 import React from "react"
+import { calcMsToMinute } from "../../helper/player"
 import { ActionPlayerType, usePlayerState } from "../../types/player"
-import { PropsSeekPlayer } from "../../types/types"
+// import { PropsSeekPlayer } from "../../types/types"
 
-type PropsPlayPauseButton = {
-    play: () => ActionPlayerType,
-    pause: () => ActionPlayerType, isPlay: usePlayerState["isPlay"],
-    // initHowl: (audioAPI: Howl | null) => ActionPlayerType,
-    audioAPI: usePlayerState["audioAPI"]
+type PropsSeekPlayer = {
+    setSeek: (seek: number, noPlaySeek?: boolean) => void,
+    duration: usePlayerState["duration"],
+    seek: usePlayerState["seek"],
 }
-const SeekPlayer = (props: PropsPlayPauseButton): JSX.Element => {
-    const { mcState, mcAction } = props
+const SeekPlayer = (props: PropsSeekPlayer): JSX.Element => {
+    const { duration, seek, setSeek } = props
 
     const [wPlayer, setWPlayer] = React.useState<number>(0) // Element width
     const [hoverValue, setHoverValue] = React.useState<number>(0)
@@ -23,14 +23,15 @@ const SeekPlayer = (props: PropsPlayPauseButton): JSX.Element => {
         console.log(seekRef.current.offsetWidth)
     }, [wPlayer !== seekRef.current?.offsetWidth])
 
-    const seekToPercents = (val: number) => val / mcState.duration * 100
+    const seekToPercents = (val: number) => val / duration * 100
 
     const seekEvent = (e: any, disableSeek?: boolean): void =>
-        mcAction.setSeek(Number((e.target as HTMLInputElement).value), disableSeek)
+        setSeek(Number((e.target as HTMLInputElement).value), disableSeek)
 
     return (
         <div className="absolute w-full -top-2">
             <input ref={seekRef} type="range"
+                step={0.05}
                 onMouseOver={(e) => {
                     e.preventDefault()
                     console.log("current val hover: ", (e.target as HTMLInputElement).value)
@@ -38,8 +39,8 @@ const SeekPlayer = (props: PropsPlayPauseButton): JSX.Element => {
                 }}
                 onMouseMove={(e) => {
                     console.log("width px: ", wPlayer)
-                    console.log("current val hover: ", (e.nativeEvent.offsetX / wPlayer * mcState.duration))
-                    setHoverValue(Math.round(e.nativeEvent.offsetX / wPlayer * mcState.duration))
+                    console.log("current val hover: ", (e.nativeEvent.offsetX / wPlayer * duration))
+                    setHoverValue(e.nativeEvent.offsetX / wPlayer * duration)
                 }}
                 onMouseUp={(e) => seekEvent(e)}
                 onKeyUp={(e) => {
@@ -56,13 +57,13 @@ const SeekPlayer = (props: PropsPlayPauseButton): JSX.Element => {
                 onTouchStart={(e) => seekEvent(e, true)}
                 onChange={(e) => {
                     // e.preventDefault()
-                    mcAction.setSeek(Number((e.target.value)), true)
-                }} value={mcState.seek} min="0" max={mcState.duration} className="w-full" />
+                    setSeek(Number((e.target.value)), true)
+                }} value={seek} min="0" max={duration} className="w-full" />
             <div className="absolute p-1 -translate-x-1 bg-white border-2 rounded-md shadow-md -top-10" style={{
                 display: `${isHover ? "block" : "none"}`,
-                left: `calc(${seekToPercents(isHover ? hoverValue : mcState.seek)}% + (${1 - seekToPercents(isHover ? hoverValue : mcState.seek) * 0.15}px))`
+                left: `calc(${seekToPercents(isHover ? hoverValue : seek)}% + (${1 - seekToPercents(isHover ? hoverValue : seek) * 0.15}px))`
             }}>
-                {isHover ? hoverValue : mcState.seek}
+                {calcMsToMinute(isHover ? hoverValue : seek)}
             </div>
         </div>
     )

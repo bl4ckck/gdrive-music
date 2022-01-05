@@ -20,8 +20,16 @@ const playerReducer: Reducer<usePlayerState, Extract<ACTION_TYPES,
                 ...state,
                 ...action.payload
             }
+        case PLAYER_ACTION_TYPE.EVENT_STATE:
+            return {
+                ...state,
+                ...action.payload
+            }
         case PLAYER_ACTION_TYPE.PLAY_STATE:
-            return {...state, ...action.payload}
+            return {
+                ...state,
+                ...action.payload
+            }
         default:
             return state
     }

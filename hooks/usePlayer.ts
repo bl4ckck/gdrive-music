@@ -1,9 +1,10 @@
 import React from "react"
 import { Howl, Howler, HowlOptions } from 'howler';
-import { ActionPlayerType, usePlayerState, usePlayerType } from "../types/player";
-import { useDispatch, useSelector } from "react-redux";
+
 import { Dispatch } from "redux";
-import { initHowl, pauseAudio, playAudio, stopAudio } from "../redux/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { ActionPlayerType, usePlayerState, usePlayerType } from "../types/player";
+import { initHowl, onEndAudio, onLoadAudio, pauseAudio, playAudio, stopAudio } from "../redux/actions";
 
 type SPlayer = usePlayerState
 const usePlayer: usePlayerType = () => {
@@ -11,7 +12,7 @@ const usePlayer: usePlayerType = () => {
 
     const [flagSeek, setFlagSeek] = React.useState<boolean>(false)
     const [seek, setSeek] = React.useState<number>(0) // init state from localstore
-    const [duration, setDuration] = React.useState<number>(0)
+    const duration = useSelector<SPlayer, SPlayer["duration"]>((state) => state.duration)
 
     const [idPlay, setIdPlay] = React.useState<number>(0)
     const text = useSelector<SPlayer, SPlayer["text"]>((state) => state.text)
@@ -22,99 +23,101 @@ const usePlayer: usePlayerType = () => {
     const isStop = useSelector<SPlayer, SPlayer["isStop"]>((state) => state.isStop)
     const [isEnd, setEnd] = React.useState<boolean>(false)
 
-    const [sound, setSound] = React.useState<Howl | undefined>(undefined)
+    const [audioAPIObj, setAudioAPIObj] = React.useState<Howl | null>(null)
 
     React.useEffect(() => {
         console.log("load Howler")
 
-        const audioAPI = new Howl({
+        const initAudioAPI = new Howl({
             src: ['songs/kon.mp3', '/songs/dew.mp3', '/songs/prism.mp3'],
-            html5: true,
-            // onload: (i) => {
-            //     console.log("onload " + i)
-            //     setDuration(sound.duration(i))
-            // },
-            // onseek: (i) => {
-            //     console.log("On Seek")
-            //     setFlagSeek(false)
-            // },
-            // onend: (i) => {
-            //     //Reset state
-            //     setFlagSeek(false)
-            //     setPlay(false)
-            //     setPause(false)
-            //     setStop(false)
-            // }
+            html5: true
         })
-        dispatch(initHowl(audioAPI))
+        initAudioAPI.on("load", () => {
+            dispatch(onLoadAudio(initAudioAPI.duration()))
+        })
+        initAudioAPI.on("seek", () => {
+            console.log("On Seek")
+            setFlagSeek(false)
+        })
+        initAudioAPI.on("end", () => {
+            //Reset state
+            setFlagSeek(false)
+            dispatch(onEndAudio())
+        })
+
+        setAudioAPIObj(initAudioAPI)
+        dispatch(initHowl(true))
     }, [])
 
-    // React.useEffect(() => {
-    //     console.log("flagSeek: ", flagSeek)
-    //     console.log("state: ", {
-    //         play: isPlay,
-    //         seek: flagSeek,
-    //         pause: isPause,
-    //         stop: isStop
-    //     })
+    React.useEffect(() => {
+        let intervalSeek: NodeJS.Timer
+        // Func Start Interval
+        const startInterval = () => {
+            if (audioAPIObj !== null)
+                intervalSeek = setInterval(() => {
+                    console.log("interval's running")
+                    setSeek(audioAPIObj.seek())
+                })
+        }
+        // No seek mode AND Stop is false AND while playing
+        if (flagSeek === false && isStop !== true && isPlay)
+            startInterval()
 
-    //     let intervalSeek: NodeJS.Timer
-    //     // Func Start Interval
-    //     const startInterval = () => {
-    //         if (sound !== undefined)
-    //             intervalSeek = setInterval(() => {
-    //                 console.log("interval's running")
-    //                 setSeek(sound.seek())
-    //             }, 1000)
-    //     }
-    //     // No seek mode AND Stop is false AND while playing
-    //     if (flagSeek === false && isStop !== true && isPlay)
-    //         startInterval()
-
-    //     // onPause Clearinterval
-    //     sound?.on("pause", () => clearInterval(intervalSeek))
-    //     // onStop clearInterval AND immediately set seek based on current seek state
-    //     sound?.on("stop", () => {
-    //         clearInterval(intervalSeek)
-    //         setSeek(sound.seek())
-    //     })
-    //     // onEnd Clearinterval
-    //     sound?.on("end", () => clearInterval(intervalSeek))
-    //     // Clean useEffct
-    //     return () => clearInterval(intervalSeek)
-    // }, [flagSeek, isPlay, isStop, sound !== undefined])
+        // onPause Clearinterval
+        audioAPIObj?.on("pause", () => clearInterval(intervalSeek))
+        // onStop clearInterval AND immediately set seek based on current seek state
+        audioAPIObj?.on("stop", () => {
+            clearInterval(intervalSeek)
+            setSeek(audioAPIObj.seek())
+        })
+        // onEnd Clearinterval
+        audioAPIObj?.on("end", () => clearInterval(intervalSeek))
+        // Clean useEffct
+        return () => clearInterval(intervalSeek)
+    }, [flagSeek, isPlay, isStop, audioAPIObj !== null])
 
     const _playAudio = (): ActionPlayerType => {
-        if (isPlay===false) // While not playing any audio            
+        if (!audioAPIObj?.playing()) { // While not playing any audio
+            audioAPIObj?.play()
             return dispatch(playAudio())
+        }
+        audioAPIObj?.pause()
         return dispatch(pauseAudio())
     }
-    const _stopAudio = (): ActionPlayerType => dispatch(stopAudio())
-    // const _setSeekAudio = (value: number, noPlaySeek?: boolean) => {
-    //     setSeek(value)
-    //     setFlagSeek(true)
-    //     if (noPlaySeek) return //true
-    //     return sound?.seek(value) //undefined
-    // }
+    const _stopAudio = React.useCallback((): ActionPlayerType => {
+        audioAPIObj?.stop()
+        return dispatch(stopAudio())
+    }, [isPlay])
+    const _setSeekAudio = (value: number, noPlaySeek?: boolean) => {
+        setSeek(value)
+        setFlagSeek(true)
+        if (noPlaySeek) return //true
+        return audioAPIObj?.seek(value) //undefined
+    }
+
+    let data = {
+            isPlay,
+            isPause,
+            isStop,
+            flagSeek,
+            seek,
+            duration,
+            isEnd,
+            text, //Reducer
+            audioAPI //Reducer
+    }
+    // const dataCb = React.useMemo(() => data, [data])
 
     return {
         // audioAPI,
         mediaControl: {
             action: {
                 play: _playAudio,
-                stop: _stopAudio
+                stop: _stopAudio,
+                setFlagSeek,
+                setSeek: _setSeekAudio
             },
-            state: {
-                isPlay,
-                isPause,
-                isStop,
-                flagSeek,
-                seek,
-                duration,
-                isEnd,
-                text, //Reducer
-                audioAPI //Reducer
-            }
+            state: React.useMemo(() => data, [data])
         }
     }
 }

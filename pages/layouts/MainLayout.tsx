@@ -19,18 +19,18 @@ type PropsPlayerWrapper = {
     actions: typeof PlayerActions
 } & usePlayerState
 
-const Compnya = (props: any) => <div>{`text ${props.isPlay} ${props.coba}`}</div>
-const Compnya1 = (props: PropsPlayerWrapper) => (
-    <Player {...props}>
-        <PlayPauseButton
-            play={props.actions.playAudio}
-            pause={props.actions.pauseAudio}
-            isPlay={props.isPlay}
-            audioAPI={props.audioAPI}
-        />
-    </Player>
-)
-const WrappedComponent = PlayerWrapper(Compnya1);
+// const Compnya = (props: any) => <div>{`text ${props.isPlay} ${props.coba}`}</div>
+// const Compnya1 = (props: PropsPlayerWrapper) => (
+//     <Player {...props}>
+//         <PlayPauseButton
+//             play={props.actions.playAudio}
+//             pause={props.actions.pauseAudio}
+//             isPlay={props.isPlay}
+//             audioAPI={props.audioAPI}
+//         />
+//     </Player>
+// )
+// const WrappedComponent = PlayerWrapper(Compnya1);
 
 const MainLayout: NextPage<PropsMainLayout> = (props) => {
     return (
@@ -47,7 +47,7 @@ const MainLayout: NextPage<PropsMainLayout> = (props) => {
                 <div>asd</div>
             </div>
             <main className="mt-20">
-                <WrappedComponent />
+                <Player />
                 {props.children}
             </main>
             <footer>
