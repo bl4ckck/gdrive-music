@@ -14,6 +14,7 @@ import { Howl } from 'howler';
 import * as PlayerActions from "../../redux/actions"
 import PlayerWrapper from '../../containers/PlayerWrapper';
 import { PlayPauseButton } from '../../components/player/controllerPlayer';
+import SidebarLayout from './SidebarLayout';
 
 type PropsPlayerWrapper = {
     actions: typeof PlayerActions
@@ -43,12 +44,14 @@ const MainLayout: NextPage<PropsMainLayout> = (props) => {
                 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <div className="fixed top-0 z-50 flex items-center w-full px-4 bg-white shadow-md h-14">
-                <div>asd</div>
-            </div>
-            <main className="mt-20">
+            <SidebarLayout />
+            <main>
+                {/* Player Component */}
                 <Player />
-                {props.children}
+                {/* Main Content and Sidebar */}
+                <div className="md:ml-[270px] mt-24 mx-4 md:mx-0 md:mt-4">
+                    {props.children}
+                </div>
             </main>
             <footer>
                 <a

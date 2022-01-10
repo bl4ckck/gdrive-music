@@ -29,8 +29,9 @@ const usePlayer: usePlayerType = () => {
         console.log("load Howler")
 
         const initAudioAPI = new Howl({
-            src: ['songs/kon.mp3', '/songs/dew.mp3', '/songs/prism.mp3'],
-            html5: true
+            src: ['songs/dew.mp3', '/songs/kon.mp3', '/songs/prism.mp3'],
+            html5: true,
+            loop: true
         })
         initAudioAPI.on("load", () => {
             dispatch(onLoadAudio(initAudioAPI.duration()))

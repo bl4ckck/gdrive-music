@@ -15,12 +15,12 @@ const SeekPlayer = (props: PropsSeekPlayer): JSX.Element => {
     const [hoverValue, setHoverValue] = React.useState<number>(0)
     const [isHover, setHover] = React.useState<boolean>(false)
 
-    const seekRef = React.useRef(null);
+    const seekRef = React.useRef<HTMLInputElement>(null);
 
     // Get element Width
     React.useEffect(() => {
-        setWPlayer(seekRef.current.offsetWidth)
-        console.log(seekRef.current.offsetWidth)
+        setWPlayer(seekRef.current!.offsetWidth)
+        console.log(seekRef.current!.offsetWidth)
     }, [wPlayer !== seekRef.current?.offsetWidth])
 
     const seekToPercents = (val: number) => val / duration * 100
@@ -61,7 +61,10 @@ const SeekPlayer = (props: PropsSeekPlayer): JSX.Element => {
                 }} value={seek} min="0" max={duration} className="w-full" />
             <div className="absolute p-1 -translate-x-1 bg-white border-2 rounded-md shadow-md -top-10" style={{
                 display: `${isHover ? "block" : "none"}`,
-                left: `calc(${seekToPercents(isHover ? hoverValue : seek)}% + (${1 - seekToPercents(isHover ? hoverValue : seek) * 0.15}px))`
+                left: `${seekToPercents(hoverValue) > (wPlayer - 30)/wPlayer * 100 
+                    ? (wPlayer - 30)/wPlayer * 100 
+                    : `calc(${seekToPercents(hoverValue)}% + 
+                    (${1 - seekToPercents(hoverValue) * 0.15}px))`}`
             }}>
                 {calcMsToMinute(isHover ? hoverValue : seek)}
             </div>

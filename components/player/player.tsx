@@ -3,9 +3,9 @@
  * 1. If song is end, the seek state also reset & the UI not bouncing
  * 2. Immediately start song with space 
 */
+// TODO: Fix on drag range overflow, must only display 0 - max duration
 // TODO: Seperate component file of player controller
 // TODO: Redux persist for localstorage
-// TODO: Redux seek
 // TODO: Redux message pattern
 // TODO: Set Loading in Media Control If soundAPI still undefined
 // TODO: Rerender only on seek component
@@ -101,7 +101,7 @@ const Player: React.FunctionComponent = (props) => {
             
             <div className="flex-grow cursor-pointer">Artist Cover</div>
 
-            <div className="cursor-pointer">volume {mcState.duration}</div>
+            <div className="cursor-pointer">volume {calcMsToMinute(mcState.duration)}</div>
             <div className="cursor-pointer">prev</div>
             {/* <div className="cursor-pointer" onClick={(e) => {
                 e.preventDefault()
