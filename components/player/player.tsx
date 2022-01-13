@@ -91,7 +91,7 @@ const Player: React.FunctionComponent = (props) => {
     //     mcAction.stopAudio()
     
     return (
-        <div className="fixed bottom-0 z-50 flex items-center w-full h-24 space-x-5 bg-white md:h-16">
+        <div className="fixed left-0 xl:left-auto xl:mx-auto xl:max-w-7xl bottom-0 z-50 flex items-center w-full h-24 space-x-5 bg-white md:h-16">
             {/* {props.children} */}
             <SeekPlayer 
                 duration={mcState.duration}

@@ -14,7 +14,8 @@ const SidebarLayout = (): JSX.Element => {
     return (
         <div className="fixed top-0 z-50 flex items-baseline py-5 space-x-4
                     w-full px-4 bg-white shadow-md
-                    md:w-[200px] md:space-x-0 md:z-0 md:flex-col
+                    md:left-[max(0px,calc(50%-45rem))]
+                    md:w-[12.5rem] md:space-x-0 md:z-0 md:flex-col
                     md:pt-4 md:pb-0 md:shadow-none md:min-h-screen">
             <div className="text-xl font-bold cursor-pointer md:mb-8">Storage Music.</div>
             <Item title="Home" icon={BiHomeAlt} active={true} />
