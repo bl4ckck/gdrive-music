@@ -44,10 +44,10 @@ const MainLayout: NextPage<PropsMainLayout> = (props) => {
                 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="max-w-7xl mx-auto">
+            <main className="mx-auto max-w-7xl">
                 <SidebarLayout />
                 {/* Main Content and Sidebar */}
-                <div className="md:ml-[15.875rem] 2xl:ml-[11.875rem] mt-24 md:mt-4">
+                <div className="mb-28 md:mb-24 md:ml-[15.875rem] 2xl:ml-[11.875rem] mt-24 md:mt-4">
                     {props.children}
                 </div>
                 {/* Player Component */}

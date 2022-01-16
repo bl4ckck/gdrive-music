@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
-import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
+import { google } from 'googleapis'
 
 // EXAMPLE SCOPE GOOGLE https://github.com/nextauthjs/next-auth/issues/1275
 // REFRESH TOKEN https://github.com/nextauthjs/next-auth/issues/1275
@@ -19,7 +19,6 @@ export default NextAuth({
                     response_type: "code"
                 },
             }
-
         }),
         // ...add more providers here
     ],
@@ -50,21 +49,28 @@ export default NextAuth({
     },
     callbacks: {
         async signIn({ user, account, profile, credentials }) {
-            console.log({ user: credentials})
+            console.log({ aweawe: credentials})
             return true // Do different verification for other providers that don't have `email_verified`
         },
         async jwt({ token, account }) {
-            console.log({tokennya: token})
             // console.log(account?.access_token)
             // Persist the OAuth access_token to the token right after signin
             if (account) {
                 token.accessToken = account.access_token
+                token.refreshToken = account.refresh_token
+                token.expiryDate = account.expires_at
+                token.tokenType = account.token_type
             }
             return token
         },
         async session({ session, token, user }) {
             // Send properties to the client, like an access_token from a provider.
             session.accessToken = token.accessToken
+            session.refreshToken = token.refreshToken
+            session.expiryDate = token.expiryDate
+            session.tokenType = token.tokenType
+
+            session.awe = "ea awdawdsdzxcbbb"
             return session
         }
     },

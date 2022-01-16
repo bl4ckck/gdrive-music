@@ -5,7 +5,7 @@ const SidebarLayout = (): JSX.Element => {
     const Item = (props: {title: string, active?: boolean, icon: IconType}): JSX.Element => {
         return (
             <div className={"md:flex cursor-pointer md:mb-4 md:p-2 md:w-full " + `${props.active ?
-                "md:rounded-md md:shadow-md" : "md:text-drib-gray"}`}>
+                "md:rounded-xl md:shadow-drib1" : "md:text-drib-gray"}`}>
                 <props.icon size={20} className="hidden md:block md:mr-2" />
                 {props.title}
             </div>
@@ -19,7 +19,7 @@ const SidebarLayout = (): JSX.Element => {
                     md:pt-4 md:pb-0 md:shadow-none md:min-h-screen">
             <div className="text-xl font-bold cursor-pointer md:mb-8">Storage Music.</div>
             <Item title="Home" icon={BiHomeAlt} active={true} />
-            <Item title="Item 1" icon={BiArch} active={false}/>
+            <Item title="Playlist" icon={BiArch} active={false}/>
         </div>
     )
 }
