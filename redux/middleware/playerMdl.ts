@@ -5,7 +5,6 @@ import { ActionPlayerType, PLAYER_ACTION_TYPE, usePlayerState } from "../../type
 import { KActions } from "../../types/types"
 import { audioAPIUpdateEventState, playAudio, playAudioUpdateState } from "../actions"
 
-
 const playAudioMdl: Middleware<{}, usePlayerState, <ActionPlayerType>(action: ActionPlayerType) => ActionPlayerType> =
     api => next => (action: ActionPlayerType) => {
 // const playAudioMdl: ThunkMiddleware<usePlayerState, ActionPlayerType> = 
@@ -25,6 +24,17 @@ const playAudioMdl: Middleware<{}, usePlayerState, <ActionPlayerType>(action: Ac
                  flagSeek: false, text: "STOP MDL" }))
         }
 }
+const playAudioFromListMdl: ThunkMiddleware<usePlayerState, ActionPlayerType> = 
+    api => next => (action: ActionPlayerType) => {
+        next(action)
+
+        if (action.type === PLAYER_ACTION_TYPE.PLAY_FROM_LIST) {
+            api.dispatch(playAudioUpdateState({
+                isPlay: true, isPause: false,
+                isStop: false, text: "PLAY FROM LIST MDL"
+            }))
+        }
+}
 const audioEventMdl: Middleware<{}, usePlayerState, <ActionPlayerType>(action: ActionPlayerType) => ActionPlayerType> =
     api => next => (action: ActionPlayerType) => {
         next(action)
@@ -34,10 +44,11 @@ const audioEventMdl: Middleware<{}, usePlayerState, <ActionPlayerType>(action: A
                 isPause: false, isStop: false, text: "ON END MDL" }))
         }
 }
+
 // const playerMdl: Middleware<{}, usePlayerState, Dispatch<Action<ActionPlayerType>>> = 
 //     api => next => (action: ActionPlayerType) => {
 //         if (action.type === PLAYER_ACTION_TYPE.PLAY)
 //             api.dispatch({type: playAudio() })
 // }
 
-export const playerMdl = [playAudioMdl, audioEventMdl]
+export const playerMdl = [playAudioMdl, audioEventMdl, playAudioFromListMdl]

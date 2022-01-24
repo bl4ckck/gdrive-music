@@ -1,4 +1,4 @@
-import { ActionPlayerType, onEndAudioState, pauseAudioState, playAudioState, PLAYER_ACTION_TYPE, stopAudioState, usePlayerState } from "../../types/player";
+import { ActionPlayerType, onEndAudioState, pauseAudioState, playAudioByIDState, playAudioState, PLAYER_ACTION_TYPE, stopAudioState, usePlayerState } from "../../types/player";
 
 export const initHowl = (audioAPI: usePlayerState["audioAPI"]): ActionPlayerType => 
     ({ type: PLAYER_ACTION_TYPE.INIT, payload: audioAPI});
@@ -21,6 +21,9 @@ export const audioAPIUpdateEventState = (payload: onEndAudioState): ActionPlayer
 */
 export const playAudio = (): ActionPlayerType => 
     ({ type: PLAYER_ACTION_TYPE.PLAY, payload: null});
+/** Play Audio From List Action */
+export const playAudioFromList = (payload: playAudioByIDState): ActionPlayerType => 
+    ({ type: PLAYER_ACTION_TYPE.PLAY_FROM_LIST, payload: {...payload, text: "Play From List Action"}});
 // Update playing state for current audio
 export const playAudioUpdateState = (payload: playAudioState | pauseAudioState | stopAudioState): ActionPlayerType => 
     ({ type: PLAYER_ACTION_TYPE.PLAY_STATE, payload: payload});

@@ -14,10 +14,11 @@ const usePlayer: usePlayerType = () => {
     const [seek, setSeek] = React.useState<number>(0) // init state from localstore
     const duration = useSelector<SPlayer, SPlayer["duration"]>((state) => state.duration)
 
-    const [idPlay, setIdPlay] = React.useState<number>(0)
     const text = useSelector<SPlayer, SPlayer["text"]>((state) => state.text)
 
     const audioAPI = useSelector<SPlayer, SPlayer["audioAPI"]>((state) => state.audioAPI)
+    const audioID = useSelector<SPlayer, SPlayer["audioID"]>((state) => state.audioID)
+    const audioURL = useSelector<SPlayer, SPlayer["audioURL"]>((state) => state.audioURL)
     const isPlay = useSelector<SPlayer, SPlayer["isPlay"]>((state) => state.isPlay)
     const isPause = useSelector<SPlayer, SPlayer["isPause"]>((state) => state.isPause)
     const isStop = useSelector<SPlayer, SPlayer["isStop"]>((state) => state.isStop)
@@ -25,15 +26,24 @@ const usePlayer: usePlayerType = () => {
 
     const [audioAPIObj, setAudioAPIObj] = React.useState<Howl | null>(null)
 
+    /** Initialize First Howl Obj */
     React.useEffect(() => {
         console.log("load Howler")
 
         const initAudioAPI = new Howl({
-            src: ['songs/dew.mp3', '/songs/kon.mp3', '/songs/prism.mp3'],
-            html5: true,
+            src: "http://localhost:3000/api/song/1EHTaUws20rgHCseNKk5ZH_afNTTWPuYs",
+            format:["mp3", "ogg", "flac", "mp4", "wav"],
+            // xhr
+            // html5: true,
+            preload: true,
             loop: true
         })
+        initAudioAPI.on("loaderror", () => {
+            // dispatch(onLoadAudio(initAudioAPI.duration()))
+            console.log("load error")
+        })
         initAudioAPI.on("load", () => {
+            console.log(initAudioAPI.duration())
             dispatch(onLoadAudio(initAudioAPI.duration()))
         })
         initAudioAPI.on("seek", () => {
@@ -46,9 +56,16 @@ const usePlayer: usePlayerType = () => {
             dispatch(onEndAudio())
         })
 
+        // console.log({audioAPI})
+        // if(audioAPI === null){
         setAudioAPIObj(initAudioAPI)
         dispatch(initHowl(true))
-    }, [])
+    }, [audioURL !== ""])
+
+    // React.useEffect(() => {
+    //     if(isPlay)
+    //         _playAudio()
+    // }, [isPlay, audioAPIObj, audioURL])
 
     React.useEffect(() => {
         let intervalSeek: NodeJS.Timer
@@ -77,8 +94,14 @@ const usePlayer: usePlayerType = () => {
         return () => clearInterval(intervalSeek)
     }, [flagSeek, isPlay, isStop, audioAPIObj !== null])
 
+    // React.useEffect(() => {
+    //     if(isPlay)
+    //         _playAudio()
+    // }, [isPlay])
+
     const _playAudio = (): ActionPlayerType => {
         if (!audioAPIObj?.playing()) { // While not playing any audio
+            // if(isPlay)
             audioAPIObj?.play()
             return dispatch(playAudio())
         }
@@ -96,18 +119,20 @@ const usePlayer: usePlayerType = () => {
         return audioAPIObj?.seek(value) //undefined
     }
 
-    let data = {
-            isPlay,
-            isPause,
-            isStop,
-            flagSeek,
-            seek,
-            duration,
-            isEnd,
-            text, //Reducer
-            audioAPI //Reducer
+    let statePlayer = {
+        audioID,
+        audioURL,
+        isPlay,
+        isPause,
+        isStop,
+        flagSeek,
+        seek,
+        duration,
+        isEnd,
+        text, //Reducer
+        audioAPI //Reducer
     }
-    // const dataCb = React.useMemo(() => data, [data])
+    // const dataCb = React.useMemo(() => statePlayer, [statePlayer])
 
     return {
         // audioAPI,
@@ -118,7 +143,7 @@ const usePlayer: usePlayerType = () => {
                 setFlagSeek,
                 setSeek: _setSeekAudio
             },
-            state: React.useMemo(() => data, [data])
+            state: React.useMemo(() => statePlayer, [statePlayer])
         }
     }
 }

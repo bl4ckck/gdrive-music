@@ -40,59 +40,9 @@ const Player: React.FunctionComponent = (props) => {
     const { mediaControl } = usePlayer()
     const mcAction = mediaControl.action
     const mcState = mediaControl.state
-    // const [wPlayer, setWPlayer] = React.useState<number>(0) // Element width
-    // const [hoverValue, setHoverValue] = React.useState<number>(0)
-    // const [isHover, setHover] = React.useState<boolean>(false)
-
-    // const seekRef = React.useRef(null);
-    // const dispatch = useDispatch<Dispatch<ActionPlayerType>>()
-    // const isPlaying = useSelector<usePlayerState, usePlayerState["isPlay"]>((state) => state.isPlay)
-
-    // const mcAction = props.actions
-
-    // React.useEffect(() => {
-    //     console.log("load Howler")
-
-    //     const audioAPI = new Howl({
-    //         src: ['songs/prism.mp3', '/songs/dew.mp3', '/songs/prism.mp3'],
-    //         html5: true,
-    //         onload: (i) => {
-    //             mcAction.onLoadAudio(audioAPI.duration())
-    //         },
-    //         onseek: (s) => {
-    //             console.log("dd")
-    //         }
-    //     })
-    //     mcAction.initHowl(audioAPI)
-    // }, [])
-
-    // React.useEffect(() => {
-    //     console.log("event key wait for audio API")
-    //     const handleSpace = (event: KeyboardEvent) => {
-    //         if (event.key === " ") {
-    //             event.preventDefault()
-    //             _playAudio()
-    //         }
-    //     };
-    //     window.addEventListener('keydown', handleSpace);
-
-    //     return () => {
-    //         window.removeEventListener('keydown', handleSpace)
-    //     };
-    // }, [props.audioAPI!==null])
-
-    // const _playAudio = (): ActionPlayerType => {
-    //     if (props.audioAPI?.playing() === false) // While not playing any audio
-    //         return mcAction.playAudio()
-    //     return mcAction.pauseAudio()
-    // }
-
-    // const _stopAudio = (): ActionPlayerType =>
-    //     mcAction.stopAudio()
     
     return (
-        <div className="fixed left-0 xl:left-auto xl:mx-auto xl:max-w-7xl bottom-0 z-50 flex items-center w-full h-24 space-x-5 bg-white md:h-16">
-            {/* {props.children} */}
+        <div className="fixed bottom-0 left-0 z-50 flex items-center w-full h-24 space-x-5 bg-white xl:left-auto xl:mx-auto xl:max-w-7xl md:h-16">
             <SeekPlayer 
                 duration={mcState.duration}
                 seek={mcState.seek}

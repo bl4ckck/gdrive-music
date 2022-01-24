@@ -2,7 +2,7 @@ import React from 'react';
 import type { NextPage } from "next"
 import Head from 'next/head'
 import Image from 'next/image'
-import Player from "../../components/player/player"
+
 import { PropsMainLayout } from "../../types/types"
 
 import { useSelector, useDispatch } from "react-redux";
@@ -16,11 +16,15 @@ import PlayerWrapper from '../../containers/PlayerWrapper';
 import { PlayPauseButton } from '../../components/player/controllerPlayer';
 import SidebarLayout from './SidebarLayout';
 
+import dynamic from 'next/dynamic'
+import Player from '../../components/player/player';
+
 type PropsPlayerWrapper = {
     actions: typeof PlayerActions
 } & usePlayerState
 
-// const Compnya = (props: any) => <div>{`text ${props.isPlay} ${props.coba}`}</div>
+const Compnya = (props: any) => <div>{`text ${props.isPlay} ${props.coba}`}</div>
+
 // const Compnya1 = (props: PropsPlayerWrapper) => (
 //     <Player {...props}>
 //         <PlayPauseButton
@@ -34,6 +38,7 @@ type PropsPlayerWrapper = {
 // const WrappedComponent = PlayerWrapper(Compnya1);
 
 const MainLayout: NextPage<PropsMainLayout> = (props) => {
+    
     return (
         <>
             <Head>
@@ -45,8 +50,8 @@ const MainLayout: NextPage<PropsMainLayout> = (props) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main className="mx-auto max-w-7xl">
-                <SidebarLayout />
                 {/* Main Content and Sidebar */}
+                <SidebarLayout />
                 <div className="mb-28 md:mb-24 md:ml-[15.875rem] 2xl:ml-[11.875rem] mt-24 md:mt-4">
                     {props.children}
                 </div>
