@@ -2,7 +2,7 @@ import React from 'react'
 import { Dispatch } from 'redux';
 import { useDispatch, useSelector } from "react-redux";
 
-import type { NextPage, GetStaticProps, InferGetStaticPropsType } from 'next'
+import type { NextPage, GetStaticProps, InferGetStaticPropsType, InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -15,13 +15,40 @@ import { TSongList } from '../types/api'
 import { axiosInst } from '../lib/AxiosInstance'
 import { ActionPlayerType } from '../types/player'
 import { playAudio, playAudioFromList } from '../redux/actions';
+import OAuth2Instance from '../lib/OAuth2Instance';
+import { google } from 'googleapis'
 
-const Home: NextPage = () => {
-  const dispatch = useDispatch<Dispatch<ActionPlayerType>>() 
-  const [songs, setSongs] = React.useState<TSongList[]>([]);
-  const [audioObj, setAudioObj] = React.useState<HTMLAudioElement | null>(null);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // const res = await fetch('https://.../data')
+  // const data: TSongList = await res.json()
+// context.req
+      // const postsResponse = await fetch("http://localhost:3000/api/song", {cache: "no-cache"});
+      // const songs = await postsResponse.json();const oauth2Client = await OAuth2Instance(req)
+      
+  const oauth2Client = await OAuth2Instance(context.req)
+  const driveApi = google.drive({ version: "v2", auth: oauth2Client })
+
+        const getAudioList = await driveApi.files.list({
+            q: "mimeType contains 'audio/'",
+            // pageSize: 100,
+            maxResults: 100,
+            fields: 'etag, items(id)'
+        })
+
+  return {
+    props: {
+      data: getAudioList.data.items,
+    },
+  }
+}
+
+const Home = (props: {data: TSongList[]}) => {
+  const dispatch = useDispatch<Dispatch<ActionPlayerType>>()
+  // const { data }: TSongList
+  // const [songs, setSongs] = React.useState<TSongList[]>([]);
+  // const [audioObj, setAudioObj] = React.useState<HTMLAudioElement | null>(null);
   // const { mediaControl: {action}  } = usePlayer()
-  
+
   // const _playAudio = (): ActionPlayerType => {
   //   if (!audioAPIObj?.playing()) { // While not playing any audio
   //     audioAPIObj?.play()
@@ -30,17 +57,6 @@ const Home: NextPage = () => {
   //   audioAPIObj?.pause()
   //   return dispatch(pauseAudio())
   // }
-
-  React.useEffect(() => {
-    const handleFetchPosts = async () => {
-      // const postsResponse = await fetch("/api/posts");
-      // const postsData = await postsResponse.json();
-      const songs: { data: TSongList[] } = await (await axiosInst.get("song")).data
-      console.log(songs)
-      setSongs(songs.data);
-    }
-    handleFetchPosts()
-  }, [])
 
   const SongList = (props: {
     title: string,
@@ -61,8 +77,10 @@ const Home: NextPage = () => {
       <div onClick={(e) => {
         e.preventDefault()
         // audioObj?.play()
-        dispatch(playAudioFromList({audioID: props.audioID, 
-          audioURL: props.audioURL + "&authuser=0", isPlay: true, text: "bla"}))
+        dispatch(playAudioFromList({
+          audioID: props.audioID,
+          audioURL: props.audioURL + "&authuser=0", isPlay: true, text: "bla"
+        }))
       }} className="flex items-center h-16 mb-4 space-x-3 rounded-md group hover:cursor-default hover:shadow-drib1">
         <div className="relative self-center px-3 py-5 cursor-pointer group-hover:drop-shadow-xl bg-slate-200">
           <span className="visible group-hover:invisible">MP3</span>
@@ -86,12 +104,12 @@ const Home: NextPage = () => {
     <>
       <div className="md:mr-6 lg:mr-[17.875rem] 2xl:mr-[14.875rem]">
         <p className="mb-4 text-lg">Song List</p>
-        {songs.map((value, index) =>
-          <SongList 
-            key={index} 
+        {props.data.map((value, index) =>
+          <SongList
+            key={index}
             title={value.name}
-            audioID={value.id+""}
-            audioURL={value.webContentLink} 
+            audioID={value.id + ""}
+            audioURL={value.webContentLink}
           />
         )}
       </div>

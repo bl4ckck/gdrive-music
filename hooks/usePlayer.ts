@@ -31,9 +31,14 @@ const usePlayer: usePlayerType = () => {
         console.log("load Howler")
 
         const initAudioAPI = new Howl({
-            src: "http://localhost:3000/api/song/1EHTaUws20rgHCseNKk5ZH_afNTTWPuYs",
+            src: audioID ? "http://localhost:3000/api/song/"+audioID : "http://localhost",
             format:["mp3", "ogg", "flac", "mp4", "wav"],
-            // xhr
+            // xhr: {
+            //     headers: {
+            //         // "Cache-Control": "private, max-age=31536000, must-revalidate, post-check=0, pre-check=0"
+            //         "Cache-Control": "no-cache"
+            //     }
+            // },
             // html5: true,
             preload: true,
             loop: true
@@ -60,7 +65,7 @@ const usePlayer: usePlayerType = () => {
         // if(audioAPI === null){
         setAudioAPIObj(initAudioAPI)
         dispatch(initHowl(true))
-    }, [audioURL !== ""])
+    }, [audioID !== ""])
 
     // React.useEffect(() => {
     //     if(isPlay)

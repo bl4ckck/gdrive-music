@@ -3,8 +3,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { google } from 'googleapis'
 import { OAuth2Client, Credentials } from 'google-auth-library'
 import { getSession } from 'next-auth/react'
+import { IncomingMessage } from 'http'
 
-const OAuth2Instance = async (req: NextApiRequest): Promise<OAuth2Client> => {
+const OAuth2Instance = async (req: IncomingMessage): Promise<OAuth2Client> => {
     let oauth2Client: OAuth2Client
     const session = await getSession({ req })
 
